@@ -1,0 +1,79 @@
+[test_generation_prompt]
+system="""\
+"""
+
+user="""\
+## 概述
+你是一个代码助手，接受一个 {{ language }} 源文件和一个 {{ language }} 测试文件。
+你的目标是生成额外的单元测试，以补充现有的测试套件，从而增加源文件的代码覆盖率。
+
+附加指南：
+- 仔细分析提供的代码。理解其目的、输入、输出以及执行的任何关键逻辑或计算。
+- 头脑风暴你认为有必要的测试用例列表，以完全验证代码的正确性并实现 100% 的代码覆盖率。
+- 在添加每个单独的测试后，审查所有测试以确保它们涵盖了所有场景，包括如何处理异常或错误。
+- 如果原始测试文件包含测试套件，假设每个生成的测试都将成为同一套件的一部分。确保新测试在风格、命名约定和结构上与现有测试套件一致。
+
+## 源文件
+这是你将编写测试的源文件，名为 `{{ source_file_name }}`。
+请注意，我们手动为每行代码添加了行号，以帮助你理解代码覆盖率报告。
+这些数字不是原始代码的一部分。
+=========
+{{ source_file_numbered|trim }}
+=========
+
+
+## 测试文件
+这是包含现有测试的文件，名为 `{{ test_file_name }}`。
+=========
+{{ test_file| trim }}
+=========
+
+
+{%- if additional_includes_section|trim %}
+
+
+{{ additional_includes_section|trim }}
+{% endif %}
+
+
+{%- if failed_tests_section|trim  %}
+
+{{ failed_tests_section|trim }}
+
+{% endif %}
+
+{%- if additional_instructions_text|trim  %}
+
+{{ additional_instructions_text|trim }}
+{% endif %}
+
+
+## 代码覆盖率
+以下是现有的代码覆盖率报告。使用此报告来确定要编写的测试，因为你应该只编写增加整体覆盖率的测试：
+=========
+{{ code_coverage_report|trim }}
+=========
+
+
+## 响应
+输出必须是一个等同于类型 $NewTests 的 YAML 对象，按照以下 Pydantic 定义：
+=====
+class SingleTest(BaseModel):
+    test_behavior: str = Field(description="测试覆盖的行为的简短描述")
+{%- if language in ["python","java"] %}
+    lines_to_cover: str = Field(description="当前未覆盖的行号列表，此特定新测试旨在覆盖这些行")
+    test_name: str = Field(description="反映要测试的行为的简短测试名称，使用蛇形命名法")
+{%- else %}
+    test_name: str = Field(description="反映测试目标的简短唯一测试名称")
+{%- endif %}
+    test_code: str = Field(description="单个测试函数，测试 'test_behavior' 中描述的行为。测试应像现有测试套件的一部分一样编写，如果有的话，可以使用现有的辅助函数、设置或拆卸代码。")
+    new_imports_code: str = Field(description="运行新测试函数所需的新导入，且测试文件中尚未导入。如果不需要新导入，请给出空字符串。如果相关，请添加新的导入行，如 'import ...'。")
+    test_tags: str = Field(description="最能描述测试的单个标签，选择范围：['happy path', 'edge case', 'other']")
+
+class NewTests(BaseModel):
+    language: str = Field(description="源代码的编程语言")
+    existing_test_function_signature: str = Field(description="重复现有测试函数签名头的一行")
+    new_tests: List[SingleTest] = Field(min_items=1, max_items={{ max_tests }}, description="要附加到现有测试套件的新测试函数列表，旨在增加代码覆盖率。每个测试应可以直接运行，无需任何额外的输入或设置代码。不引入新依赖项")
+=====
+
+示例输出：
