@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "packageManager": "npm",
+  "reporters": [
+    "html",
+    "clear-text",
+    "progress"
+  ],
+  "testRunner": "jest",
+  "coverageAnalysis": "perTest",
+  "jest": {
+    "projectType": "create-react-app",
+    "enableFindRelatedTests": true,
+    "config": {
+      "testEnvironment": "jsdom",
+      "testMatch": [
+        "<rootDir>/src/**/*.test.js",
+        "<rootDir>/__tests__/**/*.test.js"
+      ]
+    }
+  },
+  "mutate": [
+    "src/**/*.js",
+    "!src/index.js",
+    "!src/reportWebVitals.js",
+    "!src/setupTests.js",
+    "!src/**/*.test.js"
+  ],
+  "timeoutMS": 20000,
+  "tempDirName": "stryker-tmp"
+} 

@@ -1,0 +1,63 @@
+{
+  "name": "my-react-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "test:coverage": "npm test -- --coverage",
+    "test:mutation": "stryker run"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/src/**/*.test.js",
+      "<rootDir>/__tests__/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
+    ]
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^8.6.0",
+    "@stryker-mutator/jest-runner": "^8.6.0",
+    "@stryker-mutator/typescript": "^4.0.0",
+    "stryker-api": "^0.24.1",
+    "stryker-babel-transpiler": "^0.10.1",
+    "stryker-baseline-reporter": "^1.0.3",
+    "stryker-html-reporter": "^0.18.1",
+    "stryker-javascript-mutator": "^0.14.1",
+    "stryker-jest-runner": "^1.4.1",
+    "stryker-typescript": "^0.18.1",
+    "stryker-webpack-transpiler": "^0.9.1"
+  }
+}
